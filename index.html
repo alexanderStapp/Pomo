@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- <link href="/src/index.css" rel="stylesheet"> -->
+    <title>Pomo</title>
+
+  </head>
+  <body>
+    <header id="topbar">
+		<h1 id="top-title">Pomo</h1>
+		<div id="window-controls">
+			<div class="button window-hover" id="pin-button" draggable="false">
+				<img class="icon" src="/assets/icons/pin-false.svg" id="pin" alt="pin" draggable="false">
+			</div>
+			<div class="button window-hover" id="min-button" draggable="false">
+				<img class="icon" src="/assets/icons/minimize-idle.svg" id="min" alt="minimize" draggable="false">
+			</div>
+			<div class="button window-hover-close" id="close-button" draggable="false">
+				<img class="icon" src="/assets/icons/close-idle.svg" id="close" alt="close" draggable="false">
+			</div>
+		</div>
+    </header>
+    <div id="main">
+		<div class="background-grid"></div>
+      <form id="form">
+        <div id="input-section">
+          <div class="input-item">
+            <label for="focus">Focus</label>
+            <input type="number" id="focus" name="focus" min="1" max="120" step="1" value="45">
+          </div>
+          <div class="input-item">
+            <label for="break">Break</label>
+            <input type="number" id="break" name="break" min="1" max="120" step="1" value="15">
+          </div>
+          <div class="input-item">
+            <label for="cycles">Cycles</label>
+            <input type="number" id="cycles" name="cycles" min="1" max="24" step="1" value="4">
+          </div>
+        </div>
+      </form>
+      <h1 id="countdown"></h1>
+      <div id="info-panel">
+        <span id="status"></span>
+        <span id="cycles-remaining"></span>
+        <span id="cycles-completed"></span>
+      </div>
+      <script type="module" src="/src/renderer.js"></script>
+      <!-- <script>
+        window.api.receive("fromMain", (data) => {
+          console.log(`Received ${data} from main process`);
+        });
+        window.api.send("toMain", "some data");
+      </script> -->
+      <audio src="/assets/audio/focus.mp3" id="focusAudio"></audio>
+      <audio src="/assets/audio/break.mp3" id="breakAudio"></audio>
+    </div>
+	<footer id="bottombar">
+		<button type="button" id="start-button">Start</button>
+		<button type="button" id="pause-button">Pause</button>
+	</footer>
+  </body>
+</html>
