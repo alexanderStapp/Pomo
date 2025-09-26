@@ -1,31 +1,3 @@
-/**
- * This file will automatically be loaded by vite and run in the "renderer" context.
- * To learn more about the differences between the "main" and the "renderer" context in
- * Electron, visit:
- *
- * https://electronjs.org/docs/tutorial/process-model
- *
- * By default, Node.js integration in this file is disabled. When enabling Node.js integration
- * in a renderer process, please be aware of potential security implications. You can read
- * more about security risks here:
- *
- * https://electronjs.org/docs/tutorial/security
- *
- * To enable Node.js integration in this file, open up `main.js` and enable the `nodeIntegration`
- * flag:
- *
- * ```
- *  // Create the browser window.
- *  mainWindow = new BrowserWindow({
- *    width: 800,
- *    height: 600,
- *    webPreferences: {
- *      nodeIntegration: true
- *    }
- *  });
- * ```
- */
-
 import './index.css';
 // set some useful variables
 const SECOND_IN_MILLISECONDS = 1000;
@@ -35,9 +7,6 @@ const DAY_IN_MILLISECONDS = HOUR_IN_MILLISECONDS * 24;
 
 // get the element to render the countdown in
 const countdownElement = document.querySelector('#countdown');
-
-const focusAudio = document.querySelector('#focusAudio');
-const breakAudio = document.querySelector('#breakAudio');
 
 const pinButton = document.getElementById('pin');
 const minimizeButton = document.getElementById('min');
@@ -59,6 +28,7 @@ pinButton.addEventListener('click', event => {
 	window.electronAPI.sendEvent('TITLE_BAR_ACTION', 'PIN_WINDOW');
 });
 window.electronAPI.receiveEvent((isPinned) => {
+	console.log(isPinned);
 	if (isPinned) {
 		pinButton.className = 'pin-true';
 	} else {
@@ -84,14 +54,15 @@ setWaitCheckbox.addEventListener('change', () => {
 	}
 });
 
-const dateAtLogin = new Date();
 
-function roundHour(date) {
-	date.setHours(date.getHours() + Math.ceil(date.getMinutes() / 60));
-	date.setMinutes(0, 0, 0); // Resets also seconds and milliseconds
+function roundHour() {
+	const now = new Date();
+	now.setHours(now.getHours() + Math.ceil(now.getMinutes() / 60));
+	now.setMinutes(0, 0, 0); // Resets also seconds and milliseconds
 
-	waitHoursElement.innerHTML = date.getHours().toString().padStart(2, '0');
+	waitHoursElement.innerHTML = now.getHours().toString().padStart(2, '0');
 	waitMinutesElement.innerHTML = '00';
+	waitUntilTomorrowCheck();
 }
 
 function waitUntilTomorrowCheck() {
@@ -100,9 +71,9 @@ function waitUntilTomorrowCheck() {
 	const now = Date.now();
 
 	if (checkTime < now) {
-		waitUntilTomorrow.removeAttribute('hidden');
+		waitUntilTomorrow.hidden = false;
 	} else {
-		waitUntilTomorrow.setAttribute('hidden');
+		waitUntilTomorrow.hidden = true;
 	}
 }
 
@@ -153,7 +124,7 @@ decrementMinuteButton.addEventListener('click', event => {
 
 setCurrentTimeButton.addEventListener('click', event => {
 	event.preventDefault();
-	roundHour(dateAtLogin);
+	roundHour();
 });
 
 
@@ -186,7 +157,7 @@ export function countdown() {
 		if (timer <= 0 && focusStage) { // start break
 			new window.Notification('start break', { body: 'you are break', silent: true });
 			document.getElementById('status').innerHTML = 'Status: Break';
-			breakAudio.play();
+			window.electronAPI.sendEvent('PLAY_SOUND', 'BREAK');
 			focusStage = false;
 			timer = breakCountdown;
 		} else if (timer <= 0 && !focusStage) {
@@ -199,12 +170,12 @@ export function countdown() {
 				running = false;
 				// document.getElementById('status').innerHTML = 'status: done!';
 				new window.Notification('done!', { body: 'you are done', silent: true });
-				breakAudio.play();
+				window.electronAPI.sendEvent('PLAY_SOUND', 'BREAK');
 				cycles = 1;
 			} else { // start focus
 				document.getElementById('status').innerHTML = 'Status: Focus';
 				new window.Notification('start focus', { body: 'you are focus', silent: true });
-				focusAudio.play();
+				window.electronAPI.sendEvent('PLAY_SOUND', 'FOCUS');
 				waiting = false;
 				focusStage = true;
 				timer = focusCountdown;
@@ -240,7 +211,7 @@ export function countdown() {
 
 function startHandler() {
 	document.getElementById('status').innerHTML = 'Status: Focus';
-	focusAudio.play();
+	window.electronAPI.sendEvent('PLAY_SOUND', 'FOCUS');
 	timer = focusCountdown;
 	focusStage = true;
 	waiting = false;
@@ -282,5 +253,5 @@ document.getElementById('start-button').addEventListener('click', () => {
 });
 
 countdown();
-roundHour(dateAtLogin);
+roundHour();
 waitUntilTomorrowCheck();
