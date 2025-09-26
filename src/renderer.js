@@ -36,8 +36,6 @@ const DAY_IN_MILLISECONDS = HOUR_IN_MILLISECONDS * 24;
 // get the element to render the countdown in
 const countdownElement = document.querySelector('#countdown');
 
-// let focusAudio = new Audio('./audio/focus.mp3')
-// let breakAudio = new Audio('./audio/break.mp3')
 const focusAudio = document.querySelector('#focusAudio');
 const breakAudio = document.querySelector('#breakAudio');
 
@@ -45,15 +43,22 @@ const pinButton = document.getElementById('pin');
 const minimizeButton = document.getElementById('min');
 const closeButton = document.getElementById('close');
 
+const waitHoursElement = document.getElementById('hours');
+const waitMinutesElement = document.getElementById('minutes');
+const incrementHourButton = document.getElementById('increment-hour');
+const decrementHourButton = document.getElementById('decrement-hour');
+const incrementMinuteButton = document.getElementById('increment-minute');
+const decrementMinuteButton = document.getElementById('decrement-minute');
+
 pinButton.addEventListener('click', event => {
 	event.preventDefault();
 	window.electronAPI.sendEvent('TITLE_BAR_ACTION', 'PIN_WINDOW');
 });
 window.electronAPI.receiveEvent((isPinned) => {
 	if (isPinned) {
-		pinButton.src = '/assets/icons/pin-true.svg';
+		pinButton.className = 'pin-true';
 	} else {
-		pinButton.src = '/assets/icons/pin-false.svg';
+		pinButton.className = 'pin-false';
 	}
 });
 minimizeButton.addEventListener('click', event => {
@@ -65,7 +70,56 @@ closeButton.addEventListener('click', event => {
 	window.electronAPI.sendEvent('TITLE_BAR_ACTION', 'CLOSE_APP');
 });
 
+
+const dateAtLogin = new Date();
+
+function roundHour(date) {
+	date.setHours(date.getHours() + Math.ceil(date.getMinutes() / 60));
+	date.setMinutes(0, 0, 0); // Resets also seconds and milliseconds
+
+	waitHoursElement.innerHTML = date.getHours();
+}
+
+incrementHourButton.addEventListener('click', () => {
+	let hour = parseInt(waitHoursElement.innerHTML);
+	if (hour == 23 || Number.isNaN(hour)) {
+		hour = 0;
+	} else if (hour !== 23) {
+		hour += 1;
+	}
+	waitHoursElement.innerHTML = hour.toString().padStart(2, '0');
+});
+decrementHourButton.addEventListener('click', () => {
+	let hour = parseInt(waitHoursElement.innerHTML);
+	if (hour == 0 || Number.isNaN(hour)) {
+		hour = 23;
+	} else if (hour !== 0) {
+		hour -= 1;
+	}
+	waitHoursElement.innerHTML = hour.toString().padStart(2, '0');
+});
+incrementMinuteButton.addEventListener('click', () => {
+	let minute = parseInt(waitMinutesElement.innerHTML);
+	if (minute == 45 || Number.isNaN(minute)) {
+		minute = 0;
+	} else if (minute !== 45) {
+		minute += 15;
+	}
+	waitMinutesElement.innerHTML = minute.toString().padStart(2, '0');
+});
+decrementMinuteButton.addEventListener('click', () => {
+	let minute = parseInt(waitMinutesElement.innerHTML);
+	if (minute == 0 || Number.isNaN(minute)) {
+		minute = 45;
+	} else if (minute !== 0) {
+		minute -= 15;
+	}
+	waitMinutesElement.innerHTML = minute.toString().padStart(2, '0');
+});
+
+
 let running = false;
+let waiting = false;
 let timer = 0;
 let focusStage = true;
 
@@ -97,9 +151,11 @@ export function countdown() {
 			focusStage = false;
 			timer = breakCountdown;
 		} else if (timer <= 0 && !focusStage) {
-			// increments below are preformed here, as first focus is handled by click
-			cycles -= 1;
-			cyclesCompleted += 1;
+			// increments below are preformed here, as first focus is handled by click, or first cycle is technically waiting
+			if (!waiting) {
+				cycles -= 1;
+				cyclesCompleted += 1;
+			}
 			if (cycles == 0) { // done
 				running = false;
 				// document.getElementById('status').innerHTML = 'status: done!';
@@ -110,6 +166,7 @@ export function countdown() {
 				document.getElementById('status').innerHTML = 'Status: Focus';
 				new window.Notification('start focus', { body: 'you are focus', silent: true });
 				focusAudio.play();
+				waiting = false;
 				focusStage = true;
 				timer = focusCountdown;
 			}
@@ -129,7 +186,7 @@ export function countdown() {
 			(timer % MINUTE_IN_MILLISECONDS) / SECOND_IN_MILLISECONDS
 		).toLocaleString('en-US', { minimumIntegerDigits: 2 });
 		countdownElement.innerHTML = `${hoursLeft}:${minutesLeft}:${secondsLeft}`;
-	} else if (!running) {
+	} else if (!running && !waiting) {
 		document.getElementById('status').innerHTML = '';
 		document.getElementById('cycles-remaining').innerHTML = '';
 		document.getElementById('cycles-completed').innerHTML = '';
@@ -143,23 +200,39 @@ export function countdown() {
 };
 
 function startHandler() {
-	focusCountdown = document.getElementById('focus').value * MINUTE_IN_MILLISECONDS;
-	breakCountdown = document.getElementById('break').value * MINUTE_IN_MILLISECONDS;
-	cycles = document.getElementById('cycles').value;
+	waiting = false;
 	document.getElementById('status').innerHTML = 'Status: Focus';
-	countdownElement.innerHTML = '';
 	focusAudio.play();
 	timer = focusCountdown;
-	running = !running;
+	running = true;
 	focusStage = true;
 }
 
+function waitHandler(hours, minutes) {
+	document.getElementById('status').innerHTML = 'Status: Waiting...';
+	const targetTime = new Date();
+	targetTime.setHours(hours, minutes, 0, 0);
+	const waitingNow = Date.now();
+	timer = targetTime - waitingNow;
+	waiting = true;
+	running = true;
+}
+
 document.getElementById('start-button').addEventListener('click', () => {
+	const waitUntilHoursInput = document.getElementById('hours').innerHTML;
+	const waitUntilMinutesInput = document.getElementById('minutes').innerHTML;
+
 	if (running) {
-		running = !running;
+		running = false;
+		waiting = false;
 	} else if (!running) {
-		startHandler();
+		focusCountdown = document.getElementById('focus').value * MINUTE_IN_MILLISECONDS;
+		breakCountdown = document.getElementById('break').value * MINUTE_IN_MILLISECONDS;
+		cycles = document.getElementById('cycles').value;
+		countdownElement.innerHTML = '';
+		waitHandler(waitUntilHoursInput, waitUntilMinutesInput);
 	}
 });
 
 countdown();
+roundHour(dateAtLogin);

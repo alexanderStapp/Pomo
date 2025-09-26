@@ -1,8 +1,8 @@
 {
   "name": "pomo",
-  "productName": "pomo",
+  "productName": "Pomo",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "A simple pomodoro timer from the year 2004",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -13,8 +13,8 @@
   },
   "keywords": [],
   "author": {
-    "name": "Aex Stapp",
-    "email": "alexanderstapp@gmail.com"
+    "name": "hazysoda",
+    "email": "jogovem347@bitfami.com"
   },
   "license": "MIT",
   "devDependencies": {

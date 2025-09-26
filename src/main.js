@@ -20,6 +20,7 @@ const createWindow = () => {
 		frame: false,
 		thickFrame: false,
 		maximizable: false,
+		icon: path.join(__dirname, '../assets/icons/Pomo.ico'),
 		webPreferences: {
 			contextIsolation: true,
 			enableRemoteModule: false,
