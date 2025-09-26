@@ -1,7 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
-// const { ipcMain } = window.require("electron");
+// const sound = require('sound-play');
+import * as sound from 'sound-play';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -9,6 +10,8 @@ if (started) {
 }
 
 let mainWindow = null;
+let focusAudio = '';
+let breakAudio = '';
 
 const createWindow = () => {
 	// Create the browser window.
@@ -16,7 +19,7 @@ const createWindow = () => {
 		width: 256,
 		height: 384,
 		backgroundColor: '#fff',
-		resizable: false,
+		// resizable: false,
 		titleBarStyle: 'hidden',
 		frame: false,
 		thickFrame: false,
@@ -32,12 +35,17 @@ const createWindow = () => {
 	// and load the index.html of the app.
 	if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
 		mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+		focusAudio = path.join(__dirname, '../../assets/audio/start-focus.mp3');
+		breakAudio = path.join(__dirname, '../../assets/audio/break.mp3');
 	} else {
 		mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
+		focusAudio = path.join(process.resourcesPath, '/audio/start-focus.mp3');
+		breakAudio = path.join(process.resourcesPath, '/audio/break.mp3');
 	}
 
+	app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 	// Open the DevTools.
-	// mainWindow.webContents.openDevTools();
+	mainWindow.webContents.openDevTools();
 };
 
 ipcMain.on('TITLE_BAR_ACTION', (event, args) => {
@@ -49,12 +57,20 @@ ipcMain.on('TITLE_BAR_ACTION', (event, args) => {
 		} else if (args === 'PIN_WINDOW') {
 			if (mainWindow.isAlwaysOnTop()) {
 				mainWindow.setAlwaysOnTop(false);
-				mainWindow.webContents.send('PIN_STATUS', false);
+				mainWindow.webContents.send('PIN_STATUS', process.resourcesPath);
 			} else {
 				mainWindow.setAlwaysOnTop(true);
 				mainWindow.webContents.send('PIN_STATUS', true);
 			}
 		}
+	}
+});
+
+ipcMain.on('PLAY_SOUND', (event, args) => {
+	if (args === 'FOCUS') {
+		sound.play(focusAudio);
+	} else if (args === 'BREAK') {
+		sound.play(breakAudio);
 	}
 });
 

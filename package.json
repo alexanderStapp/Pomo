@@ -11,6 +11,11 @@
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\""
   },
+  "build": {
+    "files": [
+      "assets/audio/start-focus.mp3"
+    ]
+  },
   "keywords": [],
   "author": {
     "name": "hazysoda",
@@ -36,6 +41,7 @@
   },
   "dependencies": {
     "bootstrap-icons": "^1.13.1",
-    "electron-squirrel-startup": "^1.0.1"
+    "electron-squirrel-startup": "^1.0.1",
+    "sound-play": "^1.1.0"
   }
 }
