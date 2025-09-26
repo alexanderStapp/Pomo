@@ -15,6 +15,7 @@ const createWindow = () => {
 	mainWindow = new BrowserWindow({
 		width: 256,
 		height: 384,
+		backgroundColor: '#fff',
 		resizable: false,
 		titleBarStyle: 'hidden',
 		frame: false,

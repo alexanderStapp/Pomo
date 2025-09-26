@@ -49,6 +49,10 @@ const incrementHourButton = document.getElementById('increment-hour');
 const decrementHourButton = document.getElementById('decrement-hour');
 const incrementMinuteButton = document.getElementById('increment-minute');
 const decrementMinuteButton = document.getElementById('decrement-minute');
+const setCurrentTimeButton = document.getElementById('set-current-time');
+const setWaitCheckbox = document.getElementById('set-wait-checkbox');
+const waitTimeFieldset = document.getElementById('wait-time-fieldset');
+const waitUntilTomorrow = document.getElementById('wait-until-tomorrow');
 
 pinButton.addEventListener('click', event => {
 	event.preventDefault();
@@ -70,6 +74,15 @@ closeButton.addEventListener('click', event => {
 	window.electronAPI.sendEvent('TITLE_BAR_ACTION', 'CLOSE_APP');
 });
 
+setWaitCheckbox.addEventListener('change', () => {
+	if (setWaitCheckbox.checked) {
+		waitTimeFieldset.disabled = false;
+		setCurrentTimeButton.disabled = false;
+	} else {
+		waitTimeFieldset.disabled = true;
+		setCurrentTimeButton.disabled = true;
+	}
+});
 
 const dateAtLogin = new Date();
 
@@ -77,10 +90,24 @@ function roundHour(date) {
 	date.setHours(date.getHours() + Math.ceil(date.getMinutes() / 60));
 	date.setMinutes(0, 0, 0); // Resets also seconds and milliseconds
 
-	waitHoursElement.innerHTML = date.getHours();
+	waitHoursElement.innerHTML = date.getHours().toString().padStart(2, '0');
+	waitMinutesElement.innerHTML = '00';
 }
 
-incrementHourButton.addEventListener('click', () => {
+function waitUntilTomorrowCheck() {
+	const checkTime = new Date();
+	checkTime.setHours(parseInt(waitHoursElement.innerHTML), parseInt(waitMinutesElement.innerHTML), 0, 0);
+	const now = Date.now();
+
+	if (checkTime < now) {
+		waitUntilTomorrow.removeAttribute('hidden');
+	} else {
+		waitUntilTomorrow.setAttribute('hidden');
+	}
+}
+
+incrementHourButton.addEventListener('click', event => {
+	event.preventDefault();
 	let hour = parseInt(waitHoursElement.innerHTML);
 	if (hour == 23 || Number.isNaN(hour)) {
 		hour = 0;
@@ -88,8 +115,10 @@ incrementHourButton.addEventListener('click', () => {
 		hour += 1;
 	}
 	waitHoursElement.innerHTML = hour.toString().padStart(2, '0');
+	waitUntilTomorrowCheck();
 });
-decrementHourButton.addEventListener('click', () => {
+decrementHourButton.addEventListener('click', event => {
+	event.preventDefault();
 	let hour = parseInt(waitHoursElement.innerHTML);
 	if (hour == 0 || Number.isNaN(hour)) {
 		hour = 23;
@@ -97,8 +126,10 @@ decrementHourButton.addEventListener('click', () => {
 		hour -= 1;
 	}
 	waitHoursElement.innerHTML = hour.toString().padStart(2, '0');
+	waitUntilTomorrowCheck();
 });
-incrementMinuteButton.addEventListener('click', () => {
+incrementMinuteButton.addEventListener('click', event => {
+	event.preventDefault();
 	let minute = parseInt(waitMinutesElement.innerHTML);
 	if (minute == 45 || Number.isNaN(minute)) {
 		minute = 0;
@@ -106,8 +137,10 @@ incrementMinuteButton.addEventListener('click', () => {
 		minute += 15;
 	}
 	waitMinutesElement.innerHTML = minute.toString().padStart(2, '0');
+	waitUntilTomorrowCheck();
 });
-decrementMinuteButton.addEventListener('click', () => {
+decrementMinuteButton.addEventListener('click', event => {
+	event.preventDefault();
 	let minute = parseInt(waitMinutesElement.innerHTML);
 	if (minute == 0 || Number.isNaN(minute)) {
 		minute = 45;
@@ -115,6 +148,12 @@ decrementMinuteButton.addEventListener('click', () => {
 		minute -= 15;
 	}
 	waitMinutesElement.innerHTML = minute.toString().padStart(2, '0');
+	waitUntilTomorrowCheck();
+});
+
+setCurrentTimeButton.addEventListener('click', event => {
+	event.preventDefault();
+	roundHour(dateAtLogin);
 });
 
 
@@ -200,12 +239,12 @@ export function countdown() {
 };
 
 function startHandler() {
-	waiting = false;
 	document.getElementById('status').innerHTML = 'Status: Focus';
 	focusAudio.play();
 	timer = focusCountdown;
-	running = true;
 	focusStage = true;
+	waiting = false;
+	running = true;
 }
 
 function waitHandler(hours, minutes) {
@@ -213,15 +252,17 @@ function waitHandler(hours, minutes) {
 	const targetTime = new Date();
 	targetTime.setHours(hours, minutes, 0, 0);
 	const waitingNow = Date.now();
+
+	if (targetTime < waitingNow) {
+		targetTime.setDate(targetTime.getDate() + 1);
+	}
+
 	timer = targetTime - waitingNow;
 	waiting = true;
 	running = true;
 }
 
 document.getElementById('start-button').addEventListener('click', () => {
-	const waitUntilHoursInput = document.getElementById('hours').innerHTML;
-	const waitUntilMinutesInput = document.getElementById('minutes').innerHTML;
-
 	if (running) {
 		running = false;
 		waiting = false;
@@ -230,9 +271,16 @@ document.getElementById('start-button').addEventListener('click', () => {
 		breakCountdown = document.getElementById('break').value * MINUTE_IN_MILLISECONDS;
 		cycles = document.getElementById('cycles').value;
 		countdownElement.innerHTML = '';
-		waitHandler(waitUntilHoursInput, waitUntilMinutesInput);
+		if (waitTimeFieldset.disabled) {
+			startHandler();
+		} else {
+			const waitUntilHoursInput = document.getElementById('hours').innerHTML;
+			const waitUntilMinutesInput = document.getElementById('minutes').innerHTML;
+			waitHandler(waitUntilHoursInput, waitUntilMinutesInput);
+		}
 	}
 });
 
 countdown();
 roundHour(dateAtLogin);
+waitUntilTomorrowCheck();
