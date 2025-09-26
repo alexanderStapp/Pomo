@@ -45,9 +45,23 @@ h1 {
 	font-size: 30px;
 }
 
+fieldset {
+	border: none;
+	padding: 0;
+	margin: 0;
+	min-width: 0; /* Important for Firefox to remove default min-width */
+}
+
+input[type="image"][src=""] {
+  content: none;
+}
+
+:disabled {
+	opacity: 0.6;
+}
+
 #topbar {
 	height: 32px;
-	/* color: white; */
 	display: block;
 	position: absolute;
 	top: 0;
@@ -142,15 +156,13 @@ h1 {
 
 #input-section {
 	display: flex;
-	align-items: flex-start;
 	flex-wrap: wrap;
+	align-items: center;
 }
 
 .input-item {
 	margin-right: 10px;
 }
-
-
 
 #info-panel, .input-item {
 	display: flex;
@@ -158,26 +170,89 @@ h1 {
 	align-items: flex-start;
 }
 
+.checkbox {
+	display: none;
+}
+
+label span {
+  height: 16px;
+  width: 15px;
+  display: inline-block;
+  position: relative;
+  background-image: url(/assets/icons/checkbox-false.png);
+  background-size: 100%;
+}
+
+label span:active {
+  display: inline-block;
+  position: relative;
+  background-image: url(/assets/icons/checkbox-active.png);
+  background-size: 100%;
+}
+
+.checkbox-label input:checked + span {
+  background: url(/assets/icons/checkbox-true.png);
+  background-size: 100%;
+}
+
+.checkbox-label input:checked + span:active {
+  background: url(/assets/icons/checkbox-active.png);
+  background-size: 100%;
+}
+
 #wait-until-container {
+	position: inherit;
 	display: flex;
 	flex-direction: column;
 	flex-wrap: wrap;
+	align-items: center;
 	height: 80px;
+	width: 80px;
 	p {
 		margin: 5px;
 	}
 }
 
 .increment-image, .decrement-image {
-	width: 30px;
+	width: 31px;
+	height: 20px;
 }
 
-.increment-image:active {
-	content: url(/assets/icons/up-active.svg);
+input[type=image].increment-image {
+	background-image: url(/assets/icons/up-idle.svg);
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+input[type=image].decrement-image {
+	background-image: url(/assets/icons/down-idle.svg);
+	background-size: 100%;
+	background-repeat: no-repeat;
 }
 
-.decrement-image:active {
-	content: url(/assets/icons/down-active.svg);
+fieldset:not([disabled]) input[type=image].increment-image:active {
+	background-image: url(/assets/icons/up-active.svg);
+}
+fieldset:not([disabled]) input[type=image].decrement-image:active {
+	background-image: url(/assets/icons/down-active.svg);
+}
+
+input[type=image]#set-current-time {
+	width: 36px;
+	height: 36px;
+	background-image: url(/assets/icons/set-current-time-idle.png);
+	background-size: 100%;
+}
+input:not([disabled])[type=image]#set-current-time:hover {
+	background-image: url(/assets/icons/set-current-time-hover.png);
+}
+input:not([disabled])[type=image]#set-current-time:active {
+	background-image: url(/assets/icons/set-current-time-active.png);
+}
+
+#wait-until-tomorrow {
+	position: absolute;
+	top: 145px;
+	left: 27px;
 }
 
 #bottombar {

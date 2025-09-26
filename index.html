@@ -38,15 +38,25 @@
 					<input type="number" id="cycles" name="cycles" min="1" max="24" step="1" value="4">
 				</div>
 				<div class="input-item">
-					<label for="wait-until">Select a time to start:</label>
+					<label class="checkbox-label">
+						<input class="checkbox" type="checkbox" id="set-wait-checkbox">
+						<span></span>
+					</label>
+				</div>
+				<fieldset class="input-item" id="wait-time-fieldset" disabled>
+					<label for="wait-until-container">Select a time to start:</label>
 					<div id="wait-until-container">
-						<img class="increment-image" src="/assets/icons/up-idle.svg" id="increment-hour">
+						<input type="image" class="increment-image" src="" alt id="increment-hour">
 						<p id="hours">12</p>
-						<img class="decrement-image" src="/assets/icons/down-idle.svg" id="decrement-hour">
-						<img class="increment-image" src="/assets/icons/up-idle.svg" id="increment-minute">
+						<input type="image" class="decrement-image" src="" alt id="decrement-hour">
+						<input type="image" class="increment-image" src="" alt id="increment-minute">
 						<p id="minutes">00</p>
-						<img class="decrement-image" src="/assets/icons/down-idle.svg" id="decrement-minute">
+						<input type="image" class="decrement-image" src="" alt id="decrement-minute">
 					</div>
+					<span id="wait-until-tomorrow" hidden>tomorrow</span>
+				</fieldset>
+				<div class="input-item">
+					<input type="image" src="" alt id="set-current-time" disabled>
 				</div>
 			</div>
 		</form>
@@ -57,12 +67,6 @@
         <span id="cycles-completed"></span>
       </div>
       <script type="module" src="/src/renderer.js"></script>
-      <!-- <script>
-        window.api.receive("fromMain", (data) => {
-          console.log(`Received ${data} from main process`);
-        });
-        window.api.send("toMain", "some data");
-      </script> -->
       <audio src="/assets/audio/focus.mp3" id="focusAudio"></audio>
       <audio src="/assets/audio/break.mp3" id="breakAudio"></audio>
     </div>
