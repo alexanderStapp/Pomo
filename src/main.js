@@ -66,7 +66,6 @@ ipcMain.on('TITLE_BAR_ACTION', (event, args) => {
 });
 
 ipcMain.on('PLAY_SOUND', (event, args) => {
-	console.log(process.env.GITHUB_TOKEN);
 	if (args === 'FOCUS') {
 		sound.play(focusAudio);
 	} else if (args === 'BREAK') {

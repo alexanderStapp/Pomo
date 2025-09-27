@@ -20,7 +20,7 @@ module.exports = {
 				},
 				prerelease: true,
 				draft: true,
-				authToken: GITHUB_TOKEN
+				authToken: process.env.GITHUB_TOKEN
 			}
 		}
 	],
