@@ -28,7 +28,6 @@ pinButton.addEventListener('click', event => {
 	window.electronAPI.sendEvent('TITLE_BAR_ACTION', 'PIN_WINDOW');
 });
 window.electronAPI.receiveEvent((isPinned) => {
-	console.log(isPinned);
 	if (isPinned) {
 		pinButton.className = 'pin-true';
 	} else {

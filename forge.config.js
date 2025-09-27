@@ -10,6 +10,20 @@ module.exports = {
 		]
 	},
 	rebuildConfig: {},
+	publishers: [
+		{
+			name: '@electron-forge/publisher-github',
+			config: {
+				repository: {
+					owner: 'alexanderStapp',
+					name: 'Pomo'
+				},
+				prerelease: true,
+				draft: true,
+				authToken: GITHUB_TOKEN
+			}
+		}
+	],
 	makers: [
 		{
 			name: '@electron-forge/maker-squirrel',
