@@ -18,7 +18,7 @@ module.exports = {
 					owner: 'alexanderStapp',
 					name: 'Pomo'
 				},
-				prerelease: true,
+				prerelease: false,
 				draft: true,
 				authToken: process.env.GITHUB_TOKEN
 			}
