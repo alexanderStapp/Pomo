@@ -16,6 +16,9 @@
       "assets/audio/start-focus.mp3"
     ]
   },
+	"packagerConfig": {
+		"executableName": "pomo"
+	},
   "keywords": [],
   "author": {
     "name": "hazysoda",
