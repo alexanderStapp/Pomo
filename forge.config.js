@@ -39,7 +39,7 @@ module.exports = {
 				executableName: 'pomo',
 				options: {
 					icon: 'assets/icons/Pomo.png',
-					name: 'Pomo',
+					name: 'pomo',
 					productName: 'Pomo'
 				}
 			}
