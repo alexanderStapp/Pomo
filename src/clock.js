@@ -1,5 +1,3 @@
-
-
 // requestAnimationFrame(countdown);
 
 // function startTime() {
