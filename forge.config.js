@@ -36,7 +36,7 @@ module.exports = {
 		{
 			name: '@electron-forge/maker-deb',
 			config: {
-				executableName: 'Pomo',
+				executableName: 'pomo',
 				options: {
 					icon: 'assets/icons/Pomo.png',
 					name: 'Pomo',
