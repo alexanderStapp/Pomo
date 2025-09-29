@@ -1,6 +1,6 @@
 {
   "name": "pomo",
-  "productName": "Pomo",
+  "productName": "pomo",
   "version": "0.1.1-alpha",
   "description": "A simple pomodoro timer from the year 2004",
   "main": ".vite/build/main.js",
