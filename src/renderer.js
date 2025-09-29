@@ -14,10 +14,12 @@ const closeButton = document.getElementById('close');
 
 const waitHoursElement = document.getElementById('hours');
 const waitMinutesElement = document.getElementById('minutes');
+
 const incrementHourButton = document.getElementById('increment-hour');
 const decrementHourButton = document.getElementById('decrement-hour');
 const incrementMinuteButton = document.getElementById('increment-minute');
 const decrementMinuteButton = document.getElementById('decrement-minute');
+
 const setCurrentTimeButton = document.getElementById('set-current-time');
 const setWaitCheckbox = document.getElementById('set-wait-checkbox');
 const waitTimeFieldset = document.getElementById('wait-time-fieldset');
@@ -76,49 +78,61 @@ function waitUntilTomorrowCheck() {
 	}
 }
 
-incrementHourButton.addEventListener('click', event => {
-	event.preventDefault();
+function hourHandler(isIncrement) {
 	let hour = parseInt(waitHoursElement.innerHTML);
-	if (hour == 23 || Number.isNaN(hour)) {
-		hour = 0;
-	} else if (hour !== 23) {
-		hour += 1;
+	if (isIncrement) {
+		if (hour == 23 || Number.isNaN(hour)) {
+			hour = 0;
+		} else if (hour !== 23) {
+			hour += 1;
+		}
+	} else if (!isIncrement) {
+		if (hour == 0 || Number.isNaN(hour)) {
+			hour = 23;
+		} else if (hour !== 0) {
+			hour -= 1;
+		}
 	}
 	waitHoursElement.innerHTML = hour.toString().padStart(2, '0');
 	waitUntilTomorrowCheck();
+}
+
+function minuteHandler(isIncrement) {
+	let minute = parseInt(waitMinutesElement.innerHTML);
+	if (isIncrement) {
+		if (minute == 45 || Number.isNaN(minute)) {
+			minute = 0;
+			hourHandler(true);
+		} else if (minute !== 45) {
+			minute += 15;
+		}
+	} else if (!isIncrement) {
+		if (minute == 0 || Number.isNaN(minute)) {
+			minute = 45;
+			hourHandler(false);
+		} else if (minute !== 0) {
+			minute -= 15;
+		}
+	}
+	waitMinutesElement.innerHTML = minute.toString().padStart(2, '0');
+	waitUntilTomorrowCheck();
+}
+
+incrementHourButton.addEventListener('click', event => {
+	event.preventDefault();
+	hourHandler(true);
 });
 decrementHourButton.addEventListener('click', event => {
 	event.preventDefault();
-	let hour = parseInt(waitHoursElement.innerHTML);
-	if (hour == 0 || Number.isNaN(hour)) {
-		hour = 23;
-	} else if (hour !== 0) {
-		hour -= 1;
-	}
-	waitHoursElement.innerHTML = hour.toString().padStart(2, '0');
-	waitUntilTomorrowCheck();
+	hourHandler(false);
 });
 incrementMinuteButton.addEventListener('click', event => {
 	event.preventDefault();
-	let minute = parseInt(waitMinutesElement.innerHTML);
-	if (minute == 45 || Number.isNaN(minute)) {
-		minute = 0;
-	} else if (minute !== 45) {
-		minute += 15;
-	}
-	waitMinutesElement.innerHTML = minute.toString().padStart(2, '0');
-	waitUntilTomorrowCheck();
+	minuteHandler(true);
 });
 decrementMinuteButton.addEventListener('click', event => {
 	event.preventDefault();
-	let minute = parseInt(waitMinutesElement.innerHTML);
-	if (minute == 0 || Number.isNaN(minute)) {
-		minute = 45;
-	} else if (minute !== 0) {
-		minute -= 15;
-	}
-	waitMinutesElement.innerHTML = minute.toString().padStart(2, '0');
-	waitUntilTomorrowCheck();
+	minuteHandler(false);
 });
 
 setCurrentTimeButton.addEventListener('click', event => {

@@ -34,6 +34,9 @@ const createWindow = () => {
 	// and load the index.html of the app.
 	if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
 		mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+		// Open the DevTools.
+		mainWindow.webContents.openDevTools();
+		mainWindow.resizable = true;
 		focusAudio = path.join(__dirname, '../../assets/audio/start-focus.mp3');
 		breakAudio = path.join(__dirname, '../../assets/audio/break.mp3');
 	} else {
@@ -43,8 +46,6 @@ const createWindow = () => {
 	}
 
 	app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
-	// Open the DevTools.
-	// mainWindow.webContents.openDevTools();
 };
 
 ipcMain.on('TITLE_BAR_ACTION', (event, args) => {
