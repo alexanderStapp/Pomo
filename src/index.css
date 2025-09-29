@@ -108,21 +108,21 @@ input[type="image"][src=""] {
 }
 
 #min:active {
-	content: url('/assets/icons/minimize-active.svg');
+	content: url('/assets/ui/minimize-active.svg');
 	opacity: 1;
 }
 
 #close:active {
-	content: url('/assets/icons/close-active.svg');
+	content: url('/assets/ui/close-active.svg');
 	opacity: 1;
 }
 
 .pin-false {
-	content: url('/assets/icons/pin-false.svg');
+	content: url('/assets/ui/pin-false.svg');
 }
 
 .pin-true {
-	content: url('/assets/icons/pin-true.svg');
+	content: url('/assets/ui/pin-true.svg');
 }
 
 #pin:active {
@@ -179,24 +179,24 @@ label span {
   width: 15px;
   display: inline-block;
   position: relative;
-  background-image: url(/assets/icons/checkbox-false.png);
+  background-image: url(/assets/ui/checkbox-false.png);
   background-size: 100%;
 }
 
 label span:active {
   display: inline-block;
   position: relative;
-  background-image: url(/assets/icons/checkbox-active.png);
+  background-image: url(/assets/ui/checkbox-active.png);
   background-size: 100%;
 }
 
 .checkbox-label input:checked + span {
-  background: url(/assets/icons/checkbox-true.png);
+  background: url(/assets/ui/checkbox-true.png);
   background-size: 100%;
 }
 
 .checkbox-label input:checked + span:active {
-  background: url(/assets/icons/checkbox-active.png);
+  background: url(/assets/ui/checkbox-active.png);
   background-size: 100%;
 }
 
@@ -219,34 +219,34 @@ label span:active {
 }
 
 input[type=image].increment-image {
-	background-image: url(/assets/icons/up-idle.svg);
+	background-image: url(/assets/ui/up-idle.svg);
 	background-size: 100%;
 	background-repeat: no-repeat;
 }
 input[type=image].decrement-image {
-	background-image: url(/assets/icons/down-idle.svg);
+	background-image: url(/assets/ui/down-idle.svg);
 	background-size: 100%;
 	background-repeat: no-repeat;
 }
 
 fieldset:not([disabled]) input[type=image].increment-image:active {
-	background-image: url(/assets/icons/up-active.svg);
+	background-image: url(/assets/ui/up-active.svg);
 }
 fieldset:not([disabled]) input[type=image].decrement-image:active {
-	background-image: url(/assets/icons/down-active.svg);
+	background-image: url(/assets/ui/down-active.svg);
 }
 
 input[type=image]#set-current-time {
 	width: 36px;
 	height: 36px;
-	background-image: url(/assets/icons/set-current-time-idle.png);
+	background-image: url(/assets/ui/set-current-time-idle.png);
 	background-size: 100%;
 }
 input:not([disabled])[type=image]#set-current-time:hover {
-	background-image: url(/assets/icons/set-current-time-hover.png);
+	background-image: url(/assets/ui/set-current-time-hover.png);
 }
 input:not([disabled])[type=image]#set-current-time:active {
-	background-image: url(/assets/icons/set-current-time-active.png);
+	background-image: url(/assets/ui/set-current-time-active.png);
 }
 
 #wait-until-tomorrow {

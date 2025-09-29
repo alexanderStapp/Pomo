@@ -35,11 +35,25 @@ module.exports = {
 		},
 		{
 			name: '@electron-forge/maker-deb',
-			config: {}
+			config: {
+				executableName: 'Pomo',
+				options: {
+					icon: 'assets/icons/Pomo.png',
+					name: 'Pomo',
+					productName: 'Pomo'
+				}
+			}
 		},
 		{
 			name: '@electron-forge/maker-rpm',
 			config: {}
+		},
+		{
+			name: '@electron-forge/maker-dmg',
+			config: {
+				icon: 'assets/icons/Pomo.icns',
+				format: 'ULFO'
+			}
 		}
 	],
 	plugins: [
