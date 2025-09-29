@@ -40,7 +40,7 @@ module.exports = {
 				options: {
 					icon: 'assets/icons/Pomo.png',
 					name: 'pomo',
-					productName: 'Pomo'
+					productName: 'pomo'
 				}
 			}
 		},
